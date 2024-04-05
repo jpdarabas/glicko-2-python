@@ -1,9 +1,7 @@
-# I will upgrade that function to update opponents rating too
-
 import math
 import pandas as pd
 
-def single_match_rating(player, score, opponent, tau = 0.2):
+def single_match_rating(player, score, opponent, tau = 0.2, rec = True):
   """
   Glicko-2 algorithm implementation in single matches. Based on Professor Mark E. Glickman's Glicko-2 system.
 
@@ -80,9 +78,16 @@ def single_match_rating(player, score, opponent, tau = 0.2):
   
   miL = mi + fiL**2 * g(opponent.g_ratings['fi'])*(score - E(opponent.g_ratings['mi'], opponent.g_ratings['fi']))
 
+  
+  inverted_score = 1 if score == 0 else 0 if score == 1 else 0.5
+  if rec == True:
+    single_match_rating(opponent, inverted_score, player, tau, False)
+
   player["ratings"]['rating'] = 173.7178 * miL + 1500
   player["ratings"]['RD'] = 173.7178 * fiL
   player["ratings"]['sigma'] = sigmaL
+
+
 
 ## Testing
 
